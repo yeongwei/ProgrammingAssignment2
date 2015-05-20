@@ -50,17 +50,21 @@ makeCacheMatrix <- function(x = matrix()) {
     inverse
   }
   
-  setInverse <- function(i, return = FALSE) {
-    ret <- NULL
-    if (isValidInput(i)) {
-      inverse <<- i
-      ret <- inverse
+  setInverse <- function(i, qualifier = "", return = FALSE) {
+    if(qualifier == "cacheSolve") {
+      ret <- NULL
+      if (isValidInput(i)) {
+        inverse <<- i
+        ret <- inverse
+      } else {
+        ret <- NA
+      }
+      
+      if (return) {
+        return(ret)
+      }
     } else {
-      ret <- NA
-    }
-    
-    if (return) {
-      return(ret)
+      print("Error! Invalid qualifier.")
     }
   }
   
@@ -86,7 +90,7 @@ cacheSolve <- function(x, ...) {
   
   inverse <- x$getInverse()
   if (is.null(inverse)) {
-    inverse<-x$setInverse(solve(x$getMatrix()), TRUE)
+    inverse<-x$setInverse(solve(x$getMatrix()), match.call()[[1]], TRUE)
   }  
   
   return(inverse)
