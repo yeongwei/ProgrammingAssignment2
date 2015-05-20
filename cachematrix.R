@@ -25,12 +25,19 @@ makeCacheMatrix <- function(x = matrix()) {
       return(FALSE)
     }
     
+    if(ncol(x) != nrow(x)) {
+      print("Error! Please supply a square matrix.")
+      x <<- matrix()
+      return(FALSE)
+    }
+    
     return(TRUE)
   }
   
   # Constructor
   isValidInput(x)
   inverse <- NULL
+  size <- ncol(x)
   
   # Publics
   getMatrix <- function() {
@@ -50,22 +57,22 @@ makeCacheMatrix <- function(x = matrix()) {
     inverse
   }
   
-  setInverse <- function(i, qualifier = "", return = FALSE) {
-    # Do not allow user to simply set the inverse
-    if(qualifier == "cacheSolve") {
-      ret <- NULL
+  setInverse <- function(i, return = FALSE) {
+    ret <- NULL
+    
+    if(identical(diag(size), x %*% i)) {
       if (isValidInput(i)) {
         inverse <<- i
         ret <- inverse
       } else {
         ret <- NA
       }
-      
-      if (return) {
-        return(ret)
-      }
     } else {
-      print("Error! Invalid qualifier.")
+      print("Error! Not a valid inverse matrix")
+    }
+
+    if (return) {
+      return(ret)
     }
   }
   
@@ -91,7 +98,7 @@ cacheSolve <- function(x, ...) {
   
   inverse <- x$getInverse()
   if (is.null(inverse)) {
-    inverse<-x$setInverse(solve(x$getMatrix()), match.call()[[1]], TRUE)
+    inverse<-x$setInverse(solve(x$getMatrix()), TRUE)
   }  
   
   return(inverse)
