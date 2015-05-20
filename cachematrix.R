@@ -5,7 +5,7 @@
 ##
 ## functions:
 ##  getMatrix: Returns the matrix within the object
-##  setMatric: Sets a valid matrix for the object else defaults to empty matrix
+##  setMatrix: Sets a valid matrix for the object else defaults to empty matrix
 ##  getInverse: Returns the inverse matrix
 ##  setInverse: Sets the inverse matrix; If return is TRUE then return the value
 ##
