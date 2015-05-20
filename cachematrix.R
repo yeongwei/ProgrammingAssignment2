@@ -51,6 +51,7 @@ makeCacheMatrix <- function(x = matrix()) {
   }
   
   setInverse <- function(i, qualifier = "", return = FALSE) {
+    # Do not allow user to simply set the inverse
     if(qualifier == "cacheSolve") {
       ret <- NULL
       if (isValidInput(i)) {
