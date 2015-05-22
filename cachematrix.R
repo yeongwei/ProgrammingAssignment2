@@ -12,21 +12,29 @@
 
 makeCacheMatrix <- function(x = matrix()) { 
   # Privates
+  isSquareMatrix <- function(x) {
+    if (ncol(x) == nrow(x)) {
+      return(TRUE)
+    } else {
+      return(FALSE)
+    }
+  }
+  
   isValidInput <- function(input) {
     if (is.null(input)) {
-      print("Error! Please supply a matrix argument.")
+      warning("Please supply a matrix argument.")
       x <<- matrix()
       return(FALSE)
     }
     
     if (class(input) != "matrix") {
-      print("Error! Please supply a matrix argument.")
+      warning("Please supply a matrix argument.")
       x <<- matrix()
       return(FALSE)
     }
     
-    if(ncol(x) != nrow(x)) {
-      print("Error! Please supply a square matrix.")
+    if (!isSquareMatrix(x)) {
+      warning("Please supply a square matrix.")
       x <<- matrix()
       return(FALSE)
     }
@@ -34,10 +42,14 @@ makeCacheMatrix <- function(x = matrix()) {
     return(TRUE)
   }
   
+  setSize <- function(x) {
+    return(ncol(x))
+  }
+  
   # Constructor
   isValidInput(x)
   inverse <- NULL
-  size <- ncol(x)
+  size <- setSize(x)
   
   # Publics
   getMatrix <- function() {
@@ -50,6 +62,7 @@ makeCacheMatrix <- function(x = matrix()) {
     } else {
       x <<- matrix()
     }
+    size <<- setSize(x)
     inverse <<- NULL
   }
   
@@ -59,8 +72,8 @@ makeCacheMatrix <- function(x = matrix()) {
   
   setInverse <- function(i, return = FALSE) {
     ret <- NULL
-    
-    if(identical(diag(size), x %*% i)) {
+    status <- identical(diag(size), x %*% i)
+    if(status) {
       if (isValidInput(i)) {
         inverse <<- i
         ret <- inverse
@@ -68,7 +81,7 @@ makeCacheMatrix <- function(x = matrix()) {
         ret <- NA
       }
     } else {
-      print("Error! Not a valid inverse matrix")
+      warning("Not a valid inverse matrix")
     }
 
     if (return) {
@@ -92,13 +105,15 @@ makeCacheMatrix <- function(x = matrix()) {
 
 cacheSolve <- function(x, ...) {
   if (is.null(x)) {
-    print("Error! Please supply a Cachable matrix.")
+    warning("Please supply a Cachable matrix.")
     return(NULL)  
   }
   
   inverse <- x$getInverse()
   if (is.null(inverse)) {
-    inverse<-x$setInverse(solve(x$getMatrix()), TRUE)
+    m <- x$getMatrix()
+    i <- solve(m)
+    inverse<-x$setInverse(i, TRUE)
   }  
   
   return(inverse)
